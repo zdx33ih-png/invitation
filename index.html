@@ -256,7 +256,8 @@
         .envelope-flap-bottom,
         .envelope-flap-left,
         .envelope-flap-right,
-        .pink-ribbon-horizontal,
+        .pink-ribbon-left,
+        .pink-ribbon-right,
         .wax-seal,
         .envelope-text-top,
         .envelope-text-bottom,
@@ -323,10 +324,13 @@
             filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));
         }
 
-        .pink-ribbon-horizontal {
+        /* تعديل الشريط الحريري ليتكون من شريطين ينسحبان إلى الجهتين */
+        .pink-ribbon-left,
+        .pink-ribbon-right {
             position: absolute;
-            top: 50%; left: 0;
-            width: 100%; height: 65px;
+            top: 50%;
+            height: 65px;
+            width: 50%;
             transform: translateY(-50%);
             background: var(--ribbon-gradient);
             z-index: 8;
@@ -334,6 +338,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 1.1s cubic-bezier(0.7, 0, 0.3, 1), opacity 1s ease;
+        }
+
+        .pink-ribbon-left {
+            left: 0;
+            transform-origin: left center;
+        }
+
+        .pink-ribbon-right {
+            right: 0;
+            transform-origin: right center;
         }
 
         .ribbon-shine {
@@ -473,6 +488,17 @@
             z-index: 2;
         }
 
+        /* انساحاب الشريطين نحو اليسار واليمين عند فتح الظرف */
+        .envelope-container.open .pink-ribbon-left {
+            transform: translateY(-50%) translateX(-105%);
+            opacity: 0;
+        }
+
+        .envelope-container.open .pink-ribbon-right {
+            transform: translateY(-50%) translateX(105%);
+            opacity: 0;
+        }
+
         .envelope-container.open .wax-seal {
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
@@ -513,7 +539,16 @@
             position: relative;
             border: 1px solid #ebdccb;
             overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            /* تأثير الظهور التدريجي عند التمرير */
+            opacity: 0;
+            transform: translateY(45px);
+            transition: opacity 0.9s cubic-bezier(0.25, 1, 0.5, 1), transform 0.9s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+            will-change: opacity, transform;
+        }
+
+        .invitation-card.reveal-active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .invitation-card:hover {
@@ -1009,7 +1044,11 @@
                     <div class="envelope-subtext">ROYAL WEDDING INVITATION</div>
                 </div>
 
-                <div class="pink-ribbon-horizontal">
+                <!-- الشريط الحريري المزدوج المنتصف إلى شريطين ينقسمان لليمين واليسار -->
+                <div class="pink-ribbon-left">
+                    <div class="ribbon-shine"></div>
+                </div>
+                <div class="pink-ribbon-right">
                     <div class="ribbon-shine"></div>
                 </div>
 
@@ -1244,7 +1283,7 @@
         }
 
         /* ==========================================================================
-           2. آليات تفاعل الظرف والفتح
+           2. آليات تفاعل الظرف والفتح ومراقب التمرير التدريجي
            ========================================================================== */
         let isOpen = false;
 
@@ -1266,8 +1305,34 @@
             setTimeout(() => {
                 overlay.classList.add('fade-out');
                 pageContainer.classList.add('visible');
-                initMap();
+                setupScrollReveal(); // تفعيل محرك الحركة التدريجية مع النزول
             }, 1000);
+        }
+
+        /* ==========================================================================
+           مراقب التمرير للظهور التدريجي (Scroll Reveal Engine)
+           ========================================================================== */
+        function setupScrollReveal() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -60px 0px',
+                threshold: 0.12
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-active');
+                        if (entry.target.classList.contains('map-card')) {
+                            initMap();
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.invitation-card').forEach(card => {
+                observer.observe(card);
+            });
         }
 
         /* ==========================================================================
@@ -1470,4 +1535,3 @@
     </script>
 </body>
 </html>
-
