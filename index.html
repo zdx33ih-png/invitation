@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دعوة الزفاف الملكية الفاخرة - أحمد وسارة</title>
+    
+    <!-- ==========================================================================
+         1. الخطوط الخارجية والمكتبات البرمجية الأساسية
+         ========================================================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cinzel:wght@400;600;700;800;900&family=Great+Vibes&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        /* ==========================================================================
+           2. التنسيقات العامة ومتغيرات التصميم الملكية (CSS Custom Variables)
+           ========================================================================== */
+        :root {
+            --bg-color: #f6f2eb;
+            --bg-paper: #fdfcf9;
+            --bg-card-inner: #f9f6f0;
+            --gold-primary: #c59b27;
+            --gold-light: #f5e4b3;
+            --gold-bright: #ffe699;
+            --gold-dark: #7a5a0f;
+            --gold-shadow: #9e751d;
+            --gold-border: #d4af37;
+            
+            /* تدرجات ذهبية ملكية متنوعة */
+            --gold-gradient-1: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-gradient-2: linear-gradient(45deg, #aa771c 0%, #fbf5b7 50%, #bf953f 100%);
+            --gold-gradient-soft: linear-gradient(180deg, rgba(212,175,55,0.15) 0%, rgba(197,155,39,0.02) 100%);
+            --wax-gradient: radial-gradient(circle at 35% 35%, #ffd983 0%, #c79532 40%, #8c6013 85%, #573a06 100%);
+            
+            /* ألوان وتدرجات الشريط الحريري */
+            --ribbon-pink: #e2a0aa;
+            --ribbon-pink-dark: #be7581;
+            --ribbon-gradient: linear-gradient(180deg, #f7d2d8 0%, #e2a0aa 40%, #be7581 85%, #924b56 100%);
+            
+            /* ألوان النصوص والظلال */
+            --text-main: #2b2421;
+            --text-gold: #9e731b;
+            --text-muted: #6e645e;
+            --text-cream: #fbf9f5;
+            
+            --envelope-shadow: 0 40px 80px rgba(0, 0, 0, 0.25), 0 15px 30px rgba(0, 0, 0, 0.15);
+            --card-shadow: 0 25px 55px rgba(184, 150, 80, 0.12), 0 8px 24px rgba(0, 0, 0, 0.04);
+            --glow-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+            --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Aref Ruqaa', 'Amiri', serif;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            color: var(--text-main);
+            position: relative;
+            line-height: 1.8;
+            background-image: 
+                radial-gradient(var(--gold-border) 0.75px, transparent 0.75px),
+                radial-gradient(var(--gold-border) 0.75px, var(--bg-color) 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+
+        /* الطبقة الزخرفية للكانفاس لبتلات الورد والمؤثرات */
+        #petals-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* ==========================================================================
+           3. مشغل الصوت والوسائط الملكي الفاخر (Royal Audio Player)
+           ========================================================================== */
+        .audio-player-widget {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(253, 252, 249, 0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 10px 22px 10px 12px;
+            border-radius: 60px;
+            border: 1px solid var(--gold-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), var(--glow-shadow);
+            transition: all 0.4s var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .audio-player-widget:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 15px 35px rgba(197, 155, 39, 0.25);
+        }
+
+        .audio-btn {
+            background: var(--gold-gradient-1);
+            color: #3d2b07;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .audio-btn::after {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            border-radius: 50%;
+            border: 1px solid var(--gold-primary);
+            opacity: 0.6;
+            animation: rotateRing 8s linear infinite;
+        }
+
+        .audio-info {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .audio-text {
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 0.9rem;
+            color: var(--gold-dark);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .audio-subtext {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'Amiri', serif;
+        }
+
+        .audio-visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 16px;
+            margin-right: 4px;
+        }
+
+        .bar {
+            width: 3px;
+            background: var(--gold-primary);
+            border-radius: 3px;
+            height: 4px;
+            transition: height 0.2s ease;
+        }
+
+        .audio-player-widget.playing .bar:nth-child(1) { animation: soundBar 1.2s ease-in-out infinite 0.1s; }
+        .audio-player-widget.playing .bar:nth-child(2) { animation: soundBar 1.2s ease-in-out infinite 0.3s; }
+        .audio-player-widget.playing .bar:nth-child(3) { animation: soundBar 1.2s ease-in-out infinite 0.5s; }
+        .audio-player-widget.playing .bar:nth-child(4) { animation: soundBar 1.2s ease-in-out infinite 0.2s; }
+
+        @keyframes soundBar {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+
+        @keyframes rotateRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================================================
+           4. شاشة الظرف الحقيقي ثلاثي الأبعاد والختم الشمعي (3D Envelope Overlay)
+           ========================================================================== */
+        .envelope-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 1.4s cubic-bezier(0.77, 0, 0.175, 1), visibility 1.4s ease;
+            background-image: radial-gradient(#dfd4c0 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+        }
+
+        .envelope-container {
+            position: relative;
+            width: 92%;
+            max-width: 680px;
+            height: 450px;
+            cursor: pointer;
+            perspective: 2000px;
+            user-select: none;
+            transition: transform 0.5s var(--transition-smooth);
+        }
+
+        .envelope-container:hover {
+            transform: translateY(-8px) scale(1.01);
+        }
+
+        .envelope-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #faf7f0;
+            border-radius: 16px;
+            box-shadow: var(--envelope-shadow);
+            border: 1px solid #e3d8c8;
+            overflow: hidden;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(212,175,55,0.05) 100%);
+        }
+
+        .envelope-body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .envelope-flap-top,
+        .envelope-flap-bottom,
+        .envelope-flap-left,
+        .envelope-flap-right,
+        .pink-ribbon-horizontal,
+        .wax-seal,
+        .envelope-text-top,
+        .envelope-text-bottom,
+        .envelope-corner {
+            pointer-events: none;
+        }
+
+        .envelope-corner {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 2px solid var(--gold-border);
+            z-index: 6;
+        }
+
+        .envelope-corner.top-left { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .envelope-corner.top-right { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .envelope-corner.bottom-left { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .envelope-corner.bottom-right { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
+        .envelope-flap-left {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-top: 225px solid transparent;
+            border-bottom: 225px solid transparent;
+            border-left: 340px solid #f2e9dc;
+            z-index: 4;
+            filter: drop-shadow(4px 0 6px rgba(0,0,0,0.05));
+        }
+
+        .envelope-flap-right {
+            position: absolute;
+            top: 0; right: 0;
+            width: 0; height: 0;
+            border-top: 225px solid transparent;
+            border-bottom: 225px solid transparent;
+            border-right: 340px solid #eee3d4;
+            z-index: 4;
+            filter: drop-shadow(-4px 0 6px rgba(0,0,0,0.05));
+        }
+
+        .envelope-flap-bottom {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 340px solid transparent;
+            border-right: 340px solid transparent;
+            border-bottom: 240px solid #e8dbcb;
+            z-index: 5;
+            filter: drop-shadow(0 -5px 10px rgba(0,0,0,0.07));
+        }
+
+        .envelope-flap-top {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 340px solid transparent;
+            border-right: 340px solid transparent;
+            border-top: 235px solid #e3d4c3;
+            transform-origin: top;
+            transition: transform 1.3s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s ease;
+            z-index: 7;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));
+        }
+
+        .pink-ribbon-horizontal {
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; height: 65px;
+            transform: translateY(-50%);
+            background: var(--ribbon-gradient);
+            z-index: 8;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.5), inset 0 -3px 5px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ribbon-shine {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            animation: ribbonGlow 4s infinite ease-in-out;
+        }
+
+        @keyframes ribbonGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .wax-seal {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px; height: 110px;
+            background: var(--wax-gradient);
+            border-radius: 50%;
+            z-index: 9;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.42), inset 0 2px 8px rgba(255,255,255,0.7), inset 0 -5px 10px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.7s var(--transition-bounce), opacity 0.6s ease;
+        }
+
+        .wax-seal::before {
+            content: '';
+            position: absolute;
+            width: 115%; height: 115%;
+            border-radius: 48% 52% 54% 46% / 51% 48% 52% 49%;
+            background: rgba(184, 137, 39, 0.45);
+            z-index: -1;
+            filter: blur(2px);
+        }
+
+        .wax-seal-inner {
+            width: 92px; height: 92px;
+            border: 2px dashed rgba(255,225,160,0.9);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #382503;
+            text-shadow: 0px 1px 2px rgba(255,245,200,0.7);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.35);
+        }
+
+        .wax-seal-initials {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 1.55rem;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #422d05 0%, #1a1101 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wax-seal-sub {
+            font-size: 0.75rem;
+            margin-top: 1px;
+            font-family: 'Aref Ruqaa', serif;
+            font-weight: bold;
+        }
+
+        .envelope-text-top {
+            position: absolute;
+            top: 32px; width: 100%;
+            text-align: center;
+            z-index: 6;
+        }
+
+        .envelope-names {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 2.8rem;
+            color: var(--text-gold);
+            font-weight: bold;
+            line-height: 1.1;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+        }
+
+        .envelope-subtext {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--gold-primary);
+            letter-spacing: 4px;
+            margin-top: 6px;
+            font-weight: 800;
+        }
+
+        .envelope-text-bottom {
+            position: absolute;
+            bottom: 32px; width: 100%;
+            text-align: center;
+            z-index: 6;
+        }
+
+        .envelope-recipient {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.9rem;
+            color: var(--text-gold);
+            font-weight: bold;
+        }
+
+        .envelope-location {
+            font-size: 1.2rem;
+            color: var(--gold-dark);
+            margin-top: 4px;
+            font-family: 'Amiri', serif;
+        }
+
+        .click-instruction {
+            position: absolute;
+            bottom: -60px; width: 100%;
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--gold-dark);
+            font-weight: bold;
+            animation: bouncePulse 2.2s infinite ease-in-out;
+            pointer-events: none;
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        .pulse-icon {
+            display: inline-block;
+            color: var(--gold-primary);
+            margin: 0 6px;
+        }
+
+        .envelope-container.open .envelope-flap-top {
+            transform: rotateX(180deg);
+            z-index: 2;
+        }
+
+        .envelope-container.open .wax-seal {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .envelope-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* ==========================================================================
+           5. صفحة الدعوة الرئيسية والبطاقات الفاخرة (Main Invitation Layout)
+           ========================================================================== */
+        .page-container {
+            position: relative;
+            width: 100%;
+            max-width: 840px;
+            margin: 0 auto;
+            padding: 60px 20px 120px;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.4s ease 0.4s, transform 1.4s ease 0.4s;
+        }
+
+        .page-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .invitation-card {
+            background: var(--bg-paper);
+            border-radius: 24px;
+            padding: 70px 50px;
+            margin-bottom: 50px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            border: 1px solid #ebdccb;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .invitation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 65px rgba(184, 150, 80, 0.18);
+        }
+
+        .card-floral-frame {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            border: 20px solid transparent;
+            border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect x='5' y='5' width='90' height='90' fill='none' stroke='%23c59b27' stroke-width='1.5' stroke-dasharray='8 4'/%3E%3C/svg%3E") 20 stretch;
+        }
+
+        .gold-corner-ornament {
+            position: absolute;
+            width: 30px; height: 30px;
+            border: 2px solid var(--gold-primary);
+            pointer-events: none;
+        }
+
+        .gold-corner-ornament.top-l { top: 18px; left: 18px; border-right: none; border-bottom: none; }
+        .gold-corner-ornament.top-r { top: 18px; right: 18px; border-left: none; border-bottom: none; }
+        .gold-corner-ornament.bottom-l { bottom: 18px; left: 18px; border-right: none; border-top: none; }
+        .gold-corner-ornament.bottom-r { bottom: 18px; right: 18px; border-left: none; border-top: none; }
+
+        .quran-header {
+            font-size: 1.55rem;
+            color: var(--gold-dark);
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .quran-verse {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-family: 'Amiri', serif;
+            line-height: 2;
+        }
+
+        .card-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+            margin: 35px auto;
+            width: 80%;
+            position: relative;
+        }
+
+        .card-divider::after {
+            content: '❖';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-paper);
+            padding: 0 10px;
+            color: var(--gold-primary);
+            font-size: 0.9rem;
+        }
+
+        .couples-names-main {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 4.5rem;
+            color: var(--text-gold);
+            font-weight: bold;
+            margin: 18px 0 6px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .invitation-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 1.25rem;
+            letter-spacing: 5px;
+            color: var(--gold-primary);
+            margin-bottom: 30px;
+            font-weight: 800;
+        }
+
+        .standalone-seal {
+            position: relative;
+            top: 0; left: 0;
+            transform: none;
+            margin: 30px auto;
+            pointer-events: auto;
+        }
+
+        .invitation-body-text {
+            font-size: 1.55rem;
+            line-height: 2.3;
+            color: var(--text-main);
+            margin: 30px 0;
+            font-family: 'Scheherazade New', serif;
+        }
+
+        .recipient-badge {
+            background: rgba(197, 155, 39, 0.06);
+            padding: 18px 25px;
+            border-radius: 16px;
+            display: inline-block;
+            margin-bottom: 30px;
+            border: 1px dashed var(--gold-border);
+        }
+
+        .details-box {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin: 40px 0;
+            background: var(--bg-card-inner);
+            padding: 35px 28px;
+            border-radius: 20px;
+            border: 1px solid #e5d5c3;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.015);
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 1.35rem;
+            color: var(--text-main);
+            font-family: 'Amiri', serif;
+        }
+
+        .detail-row span.icon {
+            color: var(--gold-primary);
+            font-size: 1.6rem;
+            background: #fff;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--gold-light);
+        }
+
+        .btn-submit {
+            background: var(--gold-gradient-1);
+            color: #3d2b07;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 40px;
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 1.15rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 22px rgba(197, 155, 39, 0.35);
+            transition: all 0.3s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 28px rgba(197, 155, 39, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================================================
+           6. العداد التنازلي الحسي (Interactive Countdown Counter)
+           ========================================================================== */
+        .countdown-title {
+            font-weight: bold;
+            color: var(--gold-dark);
+            font-size: 1.4rem;
+            margin-bottom: 22px;
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            direction: ltr;
+        }
+
+        .countdown-box {
+            background: #fff;
+            border: 1px solid var(--gold-border);
+            border-radius: 16px;
+            padding: 16px 14px;
+            min-width: 90px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gold-gradient-1);
+        }
+
+        .countdown-num {
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--gold-dark);
+            line-height: 1;
+        }
+
+        .countdown-lab {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-family: 'Amiri', serif;
+        }
+
+        /* ==========================================================================
+           7. خط الزمن لفقرات الحفل (Royal Event Timeline)
+           ========================================================================== */
+        .section-title {
+            font-size: 2.1rem;
+            color: var(--gold-dark);
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Aref Ruqaa', serif;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-size: 1.15rem;
+            font-family: 'Amiri', serif;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 550px;
+            margin: 0 auto;
+            padding: 15px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            right: 50%;
+            width: 2px;
+            background: linear-gradient(180deg, transparent, var(--gold-border), transparent);
+            transform: translateX(50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .timeline-icon {
+            width: 50px; height: 50px;
+            background: var(--bg-paper);
+            border: 2px solid var(--gold-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .timeline-content {
+            background: var(--bg-card-inner);
+            padding: 20px 25px;
+            border-radius: 16px;
+            border: 1px solid #e5d5c3;
+            width: 82%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: scale(1.02);
+        }
+
+        .timeline-content h3 {
+            color: var(--gold-dark);
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .timeline-content p {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-top: 6px;
+            font-family: 'Amiri', serif;
+        }
+
+        /* ==========================================================================
+           8. الخريطة الرقمية والدفتر الذهبي للتهاني (Map & Guestbook)
+           ========================================================================== */
+        #map {
+            height: 350px;
+            width: 100%;
+            border-radius: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--gold-border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .guestbook-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 25px;
+            text-align: right;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid #e0d0bf;
+            background: #fff;
+            font-family: 'Amiri', serif;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(197, 155, 39, 0.25);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .wishes-list {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-left: 5px;
+        }
+
+        .wish-card {
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-right: 4px solid var(--gold-primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            text-align: right;
+        }
+
+        .wish-author {
+            font-family: 'Reem Kufi', sans-serif;
+            font-weight: bold;
+            color: var(--gold-dark);
+            font-size: 1.05rem;
+        }
+
+        .wish-text {
+            font-family: 'Amiri', serif;
+            color: var(--text-main);
+            margin-top: 4px;
+            font-size: 1rem;
+        }
+
+        /* ==========================================================================
+           9. التذييل والتنبيهات المنبثقة (Footer & Toast System)
+           ========================================================================== */
+        .invitation-footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gold-dark);
+        }
+
+        .footer-names {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: rgba(43, 36, 33, 0.96);
+            color: #fff;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            border-right: 5px solid var(--gold-border);
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @keyframes bouncePulse {
+            0%, 100% { transform: translateY(0); opacity: 0.95; }
+            50% { transform: translateY(10px); opacity: 0.55; }
+        }
+
+        /* ==========================================================================
+           10. ملائمة كافة الأحجام والشاشات (Responsive Design Rules)
+           ========================================================================== */
+        @media (max-width: 680px) {
+            .envelope-container { height: 380px; }
+            .envelope-names { font-size: 2.2rem; }
+            .envelope-recipient { font-size: 1.5rem; }
+            .couples-names-main { font-size: 3.2rem; }
+            .invitation-card { padding: 45px 22px; }
+            .countdown-container { gap: 10px; }
+            .countdown-box { min-width: 72px; padding: 12px 8px; }
+            .countdown-num { font-size: 1.6rem; }
+            .timeline::before { right: 25px; transform: none; }
+            .timeline-item { justify-content: flex-start; padding-right: 55px; }
+            .timeline-icon { position: absolute; right: 0; top: 0; }
+            .timeline-content { width: 100%; text-align: right; }
+            .audio-player-widget { top: 15px; left: 15px; padding: 8px 16px 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         المشغل الصوتى الملكى للزفاف
+         ========================================================================== -->
+    <div class="audio-player-widget" id="audioWidget" onclick="toggleAudio()">
+        <button class="audio-btn" id="audioToggleBtn" title="تشغيل/إيقاف الموسيقى">
+            <span id="audioIcon">🎼</span>
+        </button>
+        <div class="audio-info">
+            <span class="audio-text" id="audioStatusText">الموسيقى الملكية</span>
+            <span class="audio-subtext">انقر للتشغيل / الإيقاف</span>
+        </div>
+        <div class="audio-visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <!-- كانفاس المؤثرات الفيزيائية وبتلات الأزهار المتساقطة -->
+    <canvas id="petals-canvas"></canvas>
+
+    <!-- ==========================================================================
+         شاشة الظرف الملكي ثلاثي الأبعاد والختم الشمعي
+         ========================================================================== -->
+    <div class="envelope-overlay" id="envelopeOverlay">
+        <div class="envelope-container" id="envelope" onclick="openInvitation()">
+            <div class="envelope-body">
+                
+                <!-- أجنحة وطيات الظرف الجانبية -->
+                <div class="envelope-flap-left"></div>
+                <div class="envelope-flap-right"></div>
+                <div class="envelope-flap-bottom"></div>
+                <div class="envelope-flap-top"></div>
+
+                <!-- زخارف الزوايا الذهبية -->
+                <div class="envelope-corner top-left"></div>
+                <div class="envelope-corner top-right"></div>
+                <div class="envelope-corner bottom-left"></div>
+                <div class="envelope-corner bottom-right"></div>
+
+                <div class="envelope-text-top">
+                    <div class="envelope-names">أحمَد & سَارَة</div>
+                    <div class="envelope-subtext">ROYAL WEDDING INVITATION</div>
+                </div>
+
+                <div class="pink-ribbon-horizontal">
+                    <div class="ribbon-shine"></div>
+                </div>
+
+                <div class="wax-seal">
+                    <div class="wax-seal-inner">
+                        <div class="wax-seal-initials">A & S</div>
+                        <div class="wax-seal-sub">دعوة خاصة</div>
+                    </div>
+                </div>
+
+                <div class="envelope-text-bottom">
+                    <div class="envelope-recipient">إلَى السَّادَةِ الكِرَام / عائِلَة مُحَمَّد عَلِي</div>
+                    <div class="envelope-location">الموصل، نينوى، العراق</div>
+                </div>
+
+            </div>
+
+            <div class="click-instruction">
+                <span class="pulse-icon">✦</span> انقر لفتح الظرف الملكي <span class="pulse-icon">✦</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         صفحة الدعوة الملكية الكاملة
+         ========================================================================== -->
+    <div class="page-container" id="pageContainer">
+
+        <!-- البطاقة الأولى: تفاصيل الحفل والمقدمة المباركة -->
+        <div class="invitation-card main-card">
+            <div class="card-floral-frame"></div>
+            <div class="gold-corner-ornament top-l"></div>
+            <div class="gold-corner-ornament top-r"></div>
+            <div class="gold-corner-ornament bottom-l"></div>
+            <div class="gold-corner-ornament bottom-r"></div>
+
+            <div class="quran-header">بسم الله الرحمن الرحيم</div>
+            <div class="quran-verse">"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"</div>
+
+            <div class="card-divider"></div>
+
+            <h1 class="couples-names-main">أحمَد & سَارَة</h1>
+            <div class="invitation-subtitle">ROYAL WEDDING CELEBRATION</div>
+
+            <div class="wax-seal standalone-seal">
+                <div class="wax-seal-inner">
+                    <div class="wax-seal-initials">A & S</div>
+                    <div class="wax-seal-sub">دعوة خاصة</div>
+                </div>
+            </div>
+
+            <p class="invitation-body-text">
+                يسرنا ويسعدنا دعوتكم لحضور حفل زفافنا الميمون، وتكتمل فرحتنا بوجودكم ومشاركتكم لنا أجمل لحظات العمر وأغلى الذكريات.
+            </p>
+
+            <div class="recipient-badge">
+                <div class="envelope-recipient">إلَى السَّادَةِ الكِرَام / عائِلَة مُحَمَّد عَلِي</div>
+                <div class="envelope-location">الموصل، نينوى، العراق</div>
+            </div>
+
+            <div class="details-box">
+                <div class="detail-row">
+                    <span class="icon">📅</span>
+                    <span><strong>اليوم والتاريخ:</strong> السبت، 14 أكتوبر 2026</span>
+                </div>
+                <div class="detail-row">
+                    <span class="icon">⏰</span>
+                    <span><strong>الوقت:</strong> الساعة 8:00 مساءً</span>
+                </div>
+                <div class="detail-row">
+                    <span class="icon">🏰</span>
+                    <span><strong>المكان:</strong> قاعة الأمواج الملكية</span>
+                </div>
+            </div>
+
+            <div class="calendar-action-wrapper">
+                <a href="#" onclick="addToGoogleCalendar(event)" class="btn-submit">
+                    <span>📅</span> إضافة الموعد لتقويم Google
+                </a>
+            </div>
+
+            <div class="card-divider"></div>
+
+            <!-- العداد التنازلي -->
+            <div class="countdown-section">
+                <div class="countdown-title">المتبقي على ليلة العمر المباركة</div>
+                <div class="countdown-container">
+                    <div class="countdown-box">
+                        <div class="countdown-num" id="seconds">00</div>
+                        <div class="countdown-lab">ثانية</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-num" id="minutes">00</div>
+                        <div class="countdown-lab">دقيقة</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-num" id="hours">00</div>
+                        <div class="countdown-lab">ساعة</div>
+                    </div>
+                    <div class="countdown-box">
+                        <div class="countdown-num" id="days">00</div>
+                        <div class="countdown-lab">يوم</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- البطاقة الثانية: جدول فقرات الحفل Timeline -->
+        <div class="invitation-card schedule-card">
+            <div class="section-title">فقرات الحفل الملكي</div>
+            <p class="section-desc">برنامج الأمسية المباركة لنتشارك أجمل اللحظات</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon">✨</div>
+                    <div class="timeline-content">
+                        <h3>08:00 مساءً</h3>
+                        <p>استقبال الضيوف الكرام والترحيب بالمهنئين</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">👑</div>
+                    <div class="timeline-content">
+                        <h3>09:30 مساءً</h3>
+                        <p>زفة العروسين المباركة والدخول الملكي</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">🍽️</div>
+                    <div class="timeline-content">
+                        <h3>10:30 مساءً</h3>
+                        <p>تقديم مأدبة العشاء الفاخرة</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">🍰</div>
+                    <div class="timeline-content">
+                        <h3>11:30 مساءً</h3>
+                        <p>تقطيع كعكة الزفاف والتقاط الصور التذكارية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- البطاقة الثالثة: دفتر التهاني والتبريكات الذهبي -->
+        <div class="invitation-card guestbook-card">
+            <div class="section-title">دفتر التهاني الملكي</div>
+            <p class="section-desc">اترك كلمة طيبة للعروسين لتكون ذكرى خالدة</p>
+
+            <form class="guestbook-form" id="guestbookForm" onsubmit="submitWish(event)">
+                <input type="text" id="guestName" class="form-input" placeholder="اسمك الكريم..." required>
+                <textarea id="guestMessage" class="form-textarea" placeholder="اكتب أمنياتك ودعواتك الصادقة للعروسين..." required></textarea>
+                <button type="submit" class="btn-submit" style="align-self: center;">
+                    <span>✍️</span> إرسال التهاني
+                </button>
+            </form>
+
+            <div class="wishes-list" id="wishesList">
+                <div class="wish-card">
+                    <div class="wish-author">عائلة عبد العزيز</div>
+                    <div class="wish-text">ألف مبروك للعروسين الجميلين أحمد وسارة، بارك الله لكما وبارك عليكما وجمع بينكما في خير!</div>
+                </div>
+                <div class="wish-card">
+                    <div class="wish-author">د. خالد السعيد</div>
+                    <div class="wish-text">من أعماق القلب نبارك لكم هذه الفرحة الملكية متمنين لكم حياة ملؤها الحب والهناء.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- البطاقة الرابعة: الخريطة التفاعلية والموقع -->
+        <div class="invitation-card map-card">
+            <div class="section-title">موقع الحفل</div>
+            <p class="section-desc">قاعة الأمواج الملكية - الموصل، محافظة نينوى، العراق</p>
+            <div id="map"></div>
+            <div style="margin-top: 25px;">
+                <a href="https://maps.app.goo.gl/9HR9nNxmouja6pF16" target="_blank" class="btn-submit">
+                    <span>📍</span> فتح الموقع في خرائط Google
+                </a>
+            </div>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <footer class="invitation-footer">
+            <div class="footer-names">أحمد & سارة</div>
+            <p>ننتظركم بشوق لنكتمل بكم فرحتنا</p>
+        </footer>
+
+    </div>
+
+    <!-- التنبيهات المنبثقة -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==========================================================================
+         المحركات البرمجية والتفاعلية (JavaScript Engines)
+         ========================================================================== -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        /* ==========================================================================
+           1. إدارة مشغل الصوت والوسائط الملكية (موسيقى رومانسية حالمة)
+           ========================================================================== */
+        let isPlaying = false;
+        
+        // موسيقى بيانو وكمنجات رومانسية فاخرة لحفلات الزفاف
+        const bgAudio = new Audio("https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-wedding-piano-112191.mp3");
+        bgAudio.loop = true;
+        bgAudio.volume = 0.75;
+
+        function toggleAudio() {
+            const widget = document.getElementById('audioWidget');
+            const icon = document.getElementById('audioIcon');
+            const status = document.getElementById('audioStatusText');
+
+            if (isPlaying) {
+                bgAudio.pause();
+                icon.innerText = '🎼';
+                status.innerText = 'الموسيقى الملكية';
+                widget.classList.remove('playing');
+                isPlaying = false;
+                showToast('تم إيقاف تشغيل الموسيقى');
+            } else {
+                bgAudio.play().then(() => {
+                    icon.innerText = '⏸️';
+                    status.innerText = 'جاري التشغيل';
+                    widget.classList.add('playing');
+                    isPlaying = true;
+                    showToast('جاري تشغيل الموسيقى الملكية 🎻');
+                }).catch((e) => {
+                    console.log('Audio autoplay blocked or failed', e);
+                    showToast('انقر مرة أخرى لتشغيل الصوت');
+                });
+            }
+        }
+
+        /* ==========================================================================
+           2. آليات تفاعل الظرف والفتح
+           ========================================================================== */
+        let isOpen = false;
+
+        function openInvitation() {
+            if (isOpen) return;
+            isOpen = true;
+
+            const envelope = document.getElementById('envelope');
+            const overlay = document.getElementById('envelopeOverlay');
+            const pageContainer = document.getElementById('pageContainer');
+
+            envelope.classList.add('open');
+
+            // تشغيل الموسيقى تلقائياً عند النقر على الظرف
+            if (!isPlaying) { 
+                toggleAudio(); 
+            }
+
+            setTimeout(() => {
+                overlay.classList.add('fade-out');
+                pageContainer.classList.add('visible');
+                initMap();
+            }, 1000);
+        }
+
+        /* ==========================================================================
+           3. العداد التنازلي وتقويم جوجل
+           ========================================================================== */
+        const targetDate = new Date('October 14, 2026 20:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+                document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+                document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function addToGoogleCalendar(e) {
+            e.preventDefault();
+            const title = encodeURIComponent("حفل زفاف أحمد وسارة الملكي");
+            const details = encodeURIComponent("يسرنا دعوتكم لحضور حفل زفافنا الميمون في قاعة الأمواج الملكية.");
+            const location = encodeURIComponent("قاعة الأمواج الملكية، الموصل، نينوى، العراق");
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=20261014T170000Z/20261014T210000Z&details=${details}&location=${location}`;
+            window.open(url, '_blank');
+        }
+
+        /* ==========================================================================
+           4. دفتر التهاني والتبريكات
+           ========================================================================== */
+        function submitWish(e) {
+            e.preventDefault();
+            const name = document.getElementById('guestName').value.trim();
+            const message = document.getElementById('guestMessage').value.trim();
+
+            if (name && message) {
+                const wishesList = document.getElementById('wishesList');
+                const newWish = document.createElement('div');
+                newWish.className = 'wish-card';
+                newWish.innerHTML = `
+                    <div class="wish-author">${escapeHtml(name)}</div>
+                    <div class="wish-text">${escapeHtml(message)}</div>
+                `;
+                wishesList.insertBefore(newWish, wishesList.firstChild);
+
+                document.getElementById('guestName').value = '';
+                document.getElementById('guestMessage').value = '';
+
+                showToast('شكراً لك! تم إضافة تهنئتك بنجاح ✨');
+            }
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/[&<>"']/g, function (s) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[s];
+            });
+        }
+
+        /* ==========================================================================
+           5. الخريطة الرقمية Leaflet Map (قاعة الأمواج الملكية - الموصل - العراق)
+           ========================================================================== */
+        let mapInitialized = false;
+
+        function initMap() {
+            if (mapInitialized) return;
+            mapInitialized = true;
+
+            // إحداثيات قاعة الأمواج الملكية (958W+QM4، الموصل، العراق)
+            const lat = 36.365116, lng = 43.149208;
+            const map = L.map('map').setView([lat, lng], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            const customIcon = L.divIcon({
+                html: `<div style="font-size:2.5rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">🏰</div>`,
+                iconSize: [40, 40],
+                className: 'custom-map-icon'
+            });
+
+            L.marker([lat, lng], { icon: customIcon }).addTo(map)
+                .bindPopup('<b style="font-family: Amiri; font-size: 1.1rem; color: #7a5a0f;">قاعة الأمواج الملكية</b><br>الموصل، نينوى، العراق<br>حفل زفاف أحمد وسارة').openPopup();
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3800);
+        }
+
+        /* ==========================================================================
+           6. محرك بتلات الورد والمؤثرات البصرية Canvas Physics Engine
+           ========================================================================== */
+        const canvas = document.getElementById('petals-canvas');
+        const ctx = canvas.getContext('2d');
+        let petals = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Petal {
+            constructor(x, y, isTouch = false) {
+                this.x = x !== undefined ? x : Math.random() * canvas.width;
+                this.y = y !== undefined ? y : -20;
+                this.size = Math.random() * 9 + 6;
+                this.speedY = isTouch ? (Math.random() * 3 - 1.5) : (Math.random() * 1.3 + 0.7);
+                this.speedX = isTouch ? (Math.random() * 4 - 2) : (Math.random() * 0.9 - 0.45);
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2.5 - 1.25;
+                this.color = ['#f4c0c8', '#e2a0aa', '#d4af37', '#f8d7da', '#c59b27', '#ffffff'][Math.floor(Math.random() * 6)];
+                this.opacity = 1;
+                this.isTouch = isTouch;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.y * 0.015) * 0.6;
+                this.rotation += this.rotationSpeed;
+
+                if (this.isTouch) {
+                    this.opacity -= 0.018;
+                } else if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.opacity);
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 1.9, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // إنشاء بتلات خلفية متساقطة
+        for (let i = 0; i < 45; i++) {
+            petals.push(new Petal());
+        }
+
+        function spawnTouchPetals(x, y) {
+            for (let i = 0; i < 3; i++) {
+                petals.push(new Petal(x, y, true));
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => spawnTouchPetals(e.clientX, e.clientY));
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                spawnTouchPetals(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.isTouch && p.opacity <= 0) {
+                    petals.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
+
